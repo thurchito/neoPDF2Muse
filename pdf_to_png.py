@@ -1,10 +1,10 @@
 import os
 import sys
-from pdf2image import convert_from_path
+from PIL import Image
 
 def pdf_to_png(pdf_path, output_dir):
     """
-    Converts each page of a PDF to a PNG image using pdf2image.
+    Converts each page of a PDF to a PNG image using PIL.
 
     Args:
         pdf_path (str): Path to the PDF file.
@@ -15,9 +15,14 @@ def pdf_to_png(pdf_path, output_dir):
         os.makedirs(output_dir)
 
     try:
-        images = convert_from_path(pdf_path)
-        for i, image in enumerate(images):
-            image.save(os.path.join(output_dir, f"page_{i}.png"), "PNG")
+        # Open the PDF with Pillow
+        img = Image.open(pdf_path)
+
+        # Iterate over all pages
+        for i in range(img.n_frames):
+            img.seek(i)
+            img.save(os.path.join(output_dir, f"page_{i}.png"), "PNG")
+
         print("PDF to PNG conversion complete!")
 
     except Exception as e:
