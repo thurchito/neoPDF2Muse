@@ -1,6 +1,7 @@
 import os
 import zipfile
 import xml.etree.ElementTree as ET
+import subprocess
 
 def join_musicxml_files(input_dir, output_file):
     """
@@ -49,37 +50,53 @@ def join_musicxml_files(input_dir, output_file):
     print(f"Successfully joined MusicXML files into {output_file}")
 
 
-def convert_to_musescore_format(input_file, output_file, format="mscz"):
+def convert_to_musescore_format(input_file, output_file, format="mscx"):
     """
-    Converts a MusicXML file to MuseScore format (.mscz or .mscx).
+    Converts a MusicXML file to MuseScore format (.mscx).
 
     Args:
         input_file (str): Path to the input MusicXML file.
         output_file (str): Path to the output MuseScore file.
-        format (str): The desired MuseScore format ("mscz" or "mscx"). Defaults to "mscz".
     """
 
-    if format not in ["mscz", "mscx"]:
-        print("Invalid MuseScore format. Please specify 'mscz' or 'mscx'.")
+    if format != "mscx":
+        print("Only .mscx conversion is supported at this time.")
         return
 
     try:
-        # Construct the command to run MuseScore
-        command = [
-            "mscore",
-            "-o", output_file,
-            input_file
-        ]
+        # Parse the MusicXML file
+        tree = ET.parse(input_file)
+        root = tree.getroot()
 
-        # Run MuseScore in the background
-        subprocess.run(command, check=True, capture_output=True, text=True)
+        # Create the root element for the MuseScore file
+        musescore = ET.Element("museScore", {"version": "4.0"})
+        # Create the score element
+        score = ET.SubElement(musescore, "Score")
+
+        # Copy the division from the MusicXML file
+        division = root.find("division")
+        if division is not None:
+            score.append(division)
+
+        # Copy the parts from the MusicXML file
+        part_list = root.find("part-list")
+        if part_list is not None:
+            score.append(part_list)
+
+        parts = root.findall("part")
+        for part in parts:
+            score.append(part)
+
+        # Create the ElementTree and write to the output file
+        mscx_tree = ET.ElementTree(musescore)
+        mscx_tree.write(output_file, encoding="UTF-8", xml_declaration=True)
 
         print(f"Successfully converted {input_file} to {output_file}")
 
     except FileNotFoundError:
-        print("MuseScore is not installed or not in PATH.")
-    except subprocess.CalledProcessError as e:
-        print(f"Error converting file: {e.stderr}")
+        print(f"File not found: {input_file}")
+    except Exception as e:
+        print(f"Error converting file: {e}")
 
 if __name__ == '__main__':
     # Example usage
@@ -91,4 +108,4 @@ if __name__ == '__main__':
         f.write("<score><part id='P1'><measure number='2'><note><pitch><step>D</step><octave>4</octave></pitch><duration>4</duration></note></measure></part></score>")
 
     join_musicxml_files("test_musicxml", "combined.musicxml")
-    convert_to_musescore_format("combined.musicxml", "combined.mscz")
+    convert_to_musescore_format("combined.musicxml", "combined.mscx")

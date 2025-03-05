@@ -54,8 +54,8 @@ def main(pdf_path, output_dir):
     join_musicxml_files(musicxml_dir, joined_musicxml_file)
 
     # Convert to MuseScore format
-    musescore_file = os.path.join(output_dir, "combined.mscz")
-    convert_to_musescore_format(joined_musicxml_file, musescore_file, format="mscz")
+    musescore_file = os.path.join(output_dir, "combined.mscx")
+    convert_to_musescore_format(joined_musicxml_file, musescore_file, format="mscx")
 
     # Delete the image directory
     shutil.rmtree(image_dir)
