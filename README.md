@@ -18,49 +18,55 @@ This project requires the following:
 
 ## Installation
 
-1.  **Install Python:** Ensure you have Python 3.7 or higher installed on your system.
+1.  **Install Python:** Make sure you have Python 3.7 or higher installed. You can check your Python version by running `python --version` or `python3 --version` in your terminal.
 2.  **Clone the Repository:**
     ```bash
     git clone https://github.com/thedivergentai/PDF2Muse.git
     cd PDF2Muse
     ```
 3.  **Create and Activate a Virtual Environment (Recommended):**
+    Creating a virtual environment isolates the project's dependencies.
     ```bash
     python3 -m venv .venv
-    source .venv/bin/activate  # On Windows: .\.venv\Scripts\activate
+    source .venv/bin/activate  # On macOS/Linux
+    .\.venv\Scripts\activate  # On Windows
     ```
 4.  **Install Python Dependencies:**
     ```bash
+    pip install oemer PyPDF2 pdf2image requests Pillow
+    ```
+    Or, if you have a `requirements.txt` file:
+    ```bash
     pip install -r requirements.txt
     ```
-    (You may need to create a `requirements.txt` file with the list of libraries mentioned above.)
 5. **Install Poppler:**
-    *   **Windows:** Download and install Poppler for Windows from [insert link here]. Add the `bin` directory of your Poppler installation to your system's PATH environment variable.
+    *   **Windows:** Download and install Poppler for Windows from [a reliable source, e.g., a link to a known good installer - I will need to find a good link or ask the user]. Add the `bin` directory of your Poppler installation to your system's `PATH` environment variable.
     *   **macOS:** Install using Homebrew: `brew install poppler`
     *   **Linux:** Install using your distribution's package manager (e.g., `apt install poppler-utils` on Debian/Ubuntu).
 
 ## Usage
 
-The main script to run is `main.py`. It takes two arguments:
+The main script to run is `main.py`. It takes two arguments: the path to the input PDF and the output directory.
 
-*   `pdf_path`: The path to the input PDF file.
-*   `output_dir`: The directory where the output files (PNG images, MusicXML, and .mscx) will be saved.
+```bash
+python main.py <pdf_path> <output_dir>
+```
 
 **Example:**
 
 ```bash
-python main.py my_sheet_music.pdf output_directory
+python main.py my_sheet_music.pdf output
 ```
 
-This command will:
+This will:
 
 1.  Download the necessary oemer checkpoints (if they don't already exist).
-2.  Convert the PDF file (`my_sheet_music.pdf`) into a series of PNG images (one per page).
+2.  Convert the PDF (`my_sheet_music.pdf`) into a series of PNG images (one per page).
 3.  Run oemer on each PNG image to generate individual MusicXML files.
 4.  Combine the individual MusicXML files into a single `combined.musicxml` file.
 5.  Convert the combined MusicXML file into a MuseScore file (`combined.mscx`).
-6.  Save all output files in the `output_directory`.
-7.  Delete the intermediate PNG and individual MusicXML files.
+6. Save the final output in the `output` directory.
+7. Delete the intermediate PNG and individual MusicXML files.
 
 ## Scripts
 
