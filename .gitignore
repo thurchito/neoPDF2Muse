@@ -1,8 +1,0 @@
-# Ignore everything except the necessary files
-*
-!/main.py
-!/download_checkpoints.py
-!/pdf_to_png.py
-!/musicxml_utils.py
-!/README.md
-!.gitignore
