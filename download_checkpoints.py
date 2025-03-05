@@ -1,8 +1,8 @@
 import os
 import requests
 
-def download_and_extract_checkpoints(env_path):
-    """Downloads and extracts the oemer checkpoints to the specified environment path."""
+def download_checkpoints(env_path):
+    """Downloads the oemer checkpoints to the specified environment path if they don't exist."""
 
     base_url = "https://github.com/BreezeWhite/oemer/releases/download/checkpoints/"
     checkpoint_files = {
@@ -38,7 +38,8 @@ def download_and_extract_checkpoints(env_path):
             else:
                 print(f"{new_filepath} already exists, skipping rename.")
 
+    print("Checkpoints download complete!")
 
-env_path = "C:/Users/djtri/miniconda3/envs/PDF2Muse"
-download_and_extract_checkpoints(env_path)
-print("Checkpoints downloaded and extracted successfully!")
+if __name__ == "__main__":
+    env_path = "C:/Users/djtri/miniconda3/envs/PDF2Muse"
+    download_checkpoints(env_path)
