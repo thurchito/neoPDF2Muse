@@ -15,6 +15,12 @@ def download_and_extract_checkpoints(env_path):
         os.makedirs(target_dir, exist_ok=True)
 
         for filename, filename_with_prefix in files.items():
+            # Check if the final file exists before downloading
+            new_filepath = os.path.join(target_dir, f"{filename}.onnx" if filename == "model" else f"{filename}.h5")
+            if os.path.exists(new_filepath):
+                print(f"{new_filepath} already exists, skipping download.")
+                continue
+
             url = base_url + filename_with_prefix
             print(f"Downloading {url}...")
             response = requests.get(url)
@@ -25,8 +31,7 @@ def download_and_extract_checkpoints(env_path):
             with open(filepath, "wb") as f:
                 f.write(response.content)
 
-            # Rename the file, but only if the destination file doesn't exist
-            new_filepath = os.path.join(target_dir, f"{filename}.onnx" if filename == "model" else f"{filename}.h5")
+            # Rename the file
             if not os.path.exists(new_filepath):
                 print(f"Renaming {filepath} to {new_filepath}...")
                 os.rename(filepath, new_filepath)
