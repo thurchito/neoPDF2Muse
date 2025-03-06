@@ -3,3 +3,4 @@
 output/
 .gradio
 __pycache__/
+.gitignore
