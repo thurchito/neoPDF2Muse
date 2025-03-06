@@ -1,0 +1,5 @@
+*.musicxml
+*.mscx
+output/
+.gradio
+__pycache__/
