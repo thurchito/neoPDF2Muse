@@ -49,6 +49,7 @@ echo "2) GPU (ONNX Runtime)"
 echo "3) TensorFlow GPU"
 echo "4) Gradio UI"
 set /p choice="Enter your choice (1-4): "
+pause
 
 if "%choice%"=="1" (
     set VERSION=CPU
