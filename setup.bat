@@ -51,9 +51,9 @@ echo "4) Gradio UI"
 set /p choice="Enter your choice (1-4): "
 
 if "%choice%"=="1" (
-    set VERSION="CPU"
+    set VERSION=CPU
 ) else if "%choice%"=="2" (
-    set VERSION="GPU"
+    set VERSION=GPU
 ) else if "%choice%"=="3" (
     set VERSION="TensorFlow GPU"
 ) else if "%choice%"=="4" (
@@ -63,9 +63,9 @@ if "%choice%"=="1" (
     exit /b 1
 )
 
-if defined VERSION (
-    call :create_environment "%VERSION%"
-    echo "Setup complete."
-    REM Download checkpoints after environment creation
-    .\miniconda\envs\pdf2muse\python.exe download_checkpoints.py
-)
+if defined VERSION call :create_environment "%VERSION%"
+
+echo "Setup complete."
+
+REM Download checkpoints after environment creation
+if defined VERSION .\miniconda\envs\pdf2muse\python.exe download_checkpoints.py
