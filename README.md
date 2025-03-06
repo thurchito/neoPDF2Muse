@@ -16,15 +16,13 @@ We also thank Google ☁️ for providing a free cloud trial, which enabled us t
 
 This project requires the following:
 
-*   Python 3.7+ 🐍
+*   Python 3.9 🐍
 *   **Python Libraries:** 📚
     *   `oemer`
-    *   `PyPDF2`
-    *   `Pillow`
     *   `pdf2image`
     *   `requests`
 *   **External Tools:** 🛠️
-    *   Poppler (for pdf to image conversion, needs to be in system PATH)
+    *   Poppler (for pdf to image conversion)
 
 ## ⬇️ Installation
 
@@ -34,49 +32,39 @@ This project requires the following:
     git clone https://github.com/thedivergentai/PDF2Muse.git
     cd PDF2Muse
     ```
-3.  **Create and Activate a Virtual Environment (Recommended):** 🔒
-    Creating a virtual environment isolates the project's dependencies.
+3.  **Run the Setup Script:** ⚙️
+    Run the appropriate setup script for your operating system:
+    *   **Linux/macOS:** `./setup.sh`
+    *   **Windows:** `setup.bat`
+
+    The setup script will:
+    *   Install Miniconda locally within the `miniconda` directory.
+    *   Prompt you to select an installation version: `CPU`, `GPU (ONNX Runtime)`, `TensorFlow GPU`, or `Gradio UI`.
+    *   Create a Conda environment named `pdf2muse` with the necessary dependencies.
+
+4.  **Activate the Environment:**
     ```bash
-    python3 -m venv .venv
-    source .venv/bin/activate  # On macOS/Linux
-    .\.venv\Scripts\activate  # On Windows
+    conda activate ./miniconda/envs/pdf2muse
     ```
-4.  **Install Python Dependencies:** 📦
-    ```bash
-    pip install oemer PyPDF2 pdf2image requests Pillow
-    ```
-    Or, if you have a `requirements.txt` file:
-    ```bash
-    pip install -r requirements.txt
-    ```
-5.  **Install Poppler:** 📄
-    *   **Windows:** Download and install Poppler for Windows from [a reliable source, e.g., a link to a known good installer - I will need to find a good link or ask the user]. Add the `bin` directory of your Poppler installation to your system's `PATH` environment variable.
-    *   **macOS:** Install using Homebrew: `brew install poppler`
-    *   **Linux:** Install using your distribution's package manager (e.g., `apt install poppler-utils` on Debian/Ubuntu).
 
 ## 🚀 Usage
 
-The main script to run is `main.py`. It takes two arguments: the path to the input PDF and the output directory.
+1.  **Run the Run Script:** 🚀
+    Run the appropriate run script for your operating system:
+    *   **Linux/macOS:** `./run_pdf2muse.sh`
+    *   **Windows:** `run_pdf2muse.bat`
 
-```bash
-python main.py <pdf_path> <output_dir>
-```
+    The run script will:
+    *   Prompt you to select a runtime version: `CPU`, `GPU (ONNX Runtime)`, `TensorFlow GPU`, or `Gradio UI`.
+    *   For `CPU`, `GPU`, and `TensorFlow GPU`:
+        *   Prompt you for the path to the PDF file and the output directory (default: `output`).
+        *   Run the PDF2Muse conversion process.
+    *   For `Gradio UI`:
+        *   Launch the Gradio web interface.
 
-**Example:** 💡
+## 🧪 Testing
 
-```bash
-python main.py my_sheet_music.pdf output
-```
-
-This will:
-
-1.  Download the necessary oemer checkpoints (if they don't already exist).
-2.  Convert the PDF (`my_sheet_music.pdf`) into a series of PNG images (one per page).
-3.  Run oemer on each PNG image to generate individual MusicXML files.
-4.  Combine the individual MusicXML files into a single `combined.musicxml` file.
-5.  Convert the combined MusicXML file into a MuseScore file (`combined.mscx`).
-6.  Save the final output in the `output` directory.
-7.  Delete the intermediate PNG and individual MusicXML files.
+To test your installation, run the `run_pdf2muse.sh` or `run_pdf2muse.bat` script and select one of the runtime versions. Provide a sample PDF file and an output directory. Verify that the script completes successfully and generates the expected output files (MusicXML and MuseScore files). For the Gradio UI, verify that the web interface launches correctly and that you can upload a PDF file and convert it.
 
 ## 📜 Scripts
 
@@ -86,3 +74,8 @@ This will:
 *   **`musicxml_utils.py`:** Provides utility functions for working with MusicXML files:
     *   `join_musicxml_files()`: Combines multiple MusicXML files (typically one per page) into a single MusicXML file.
     *   `convert_to_musescore_format()`: Converts a MusicXML file to the uncompressed MuseScore format (.mscx).
+
+## 🛠️ Additional Notes
+
+*   **Poppler:** Poppler is required for PDF to image conversion. The setup scripts will install it via Conda.
+*   **CUDA (GPU Version):** The setup scripts will install CUDA 12.4 using `conda install nvidia/label/cuda-12.4.0::cuda-toolkit`.

@@ -41,5 +41,6 @@ def download_checkpoints(env_path):
     print("Checkpoints download complete!")
 
 if __name__ == "__main__":
-    env_path = "C:/Users/djtri/miniconda3/envs/PDF2Muse"
+    # Dynamically determine the environment path
+    env_path = os.path.join("miniconda", "envs", "pdf2muse")
     download_checkpoints(env_path)

@@ -3,3 +3,6 @@
 output/
 .gradio
 __pycache__/
+Miniconda3-*.sh
+Miniconda3-*.exe
+miniconda/  # Keep the miniconda directory
