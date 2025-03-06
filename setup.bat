@@ -43,12 +43,34 @@ goto :eof
 REM Main script logic
 call :install_miniconda
 
+if not exist "%MINICONDA_DIR%" (
+    echo "Error: Miniconda installation failed. The directory %MINICONDA_DIR% does not exist."
+    exit /b 1
+)
+
 echo "Select installation version:"
 echo "1) CPU"
 echo "2) GPU (ONNX Runtime)"
 echo "3) TensorFlow GPU"
 set /p choice="Enter your choice (1-3): "
 pause
+
+echo "Before calling create_environment"
+
+if "%choice%"=="1" (
+    set VERSION=CPU
+) else if "%choice%"=="2" (
+    set VERSION=GPU
+) else if "%choice%"=="3" (
+    set VERSION="TensorFlow GPU"
+) else (
+    echo "Invalid choice."
+    exit /b 1
+)
+
+echo "After setting VERSION, VERSION is %VERSION%"
+
+if defined VERSION call :create_environment "%VERSION%"
 
 if "%choice%"=="1" (
     set VERSION=CPU
