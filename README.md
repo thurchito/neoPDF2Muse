@@ -39,11 +39,6 @@ This project requires the following:
     *   Prompt you to select an installation version: `CPU`, `GPU (ONNX Runtime)`, `TensorFlow GPU`, or `Gradio UI`.
     *   Create a Conda environment named `pdf2muse` with the necessary dependencies.
 
-4.  **Activate the Environment:**
-    ```bash
-    conda activate ./miniconda/envs/pdf2muse
-    ```
-
 ## 🚀 Usage
 
 1.  **Run the Run Script:** 🚀
