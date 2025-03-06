@@ -14,8 +14,8 @@ set MINICONDA_URL=https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-
 set MINICONDA_INSTALLER=Miniconda3-latest-Windows-x86_64.exe
 curl -o "%MINICONDA_INSTALLER%" "%MINICONDA_URL%"
 
-REM Silently install Miniconda
-start /wait "" "%MINICONDA_INSTALLER%" /InstallationType=JustMe /RegisterPython=0 /S /D=%CD%\%MINICONDA_DIR%
+REM Install Miniconda
+start /wait "" "%MINICONDA_INSTALLER%" /InstallationType=JustMe /RegisterPython=0 /D=%CD%\%MINICONDA_DIR%
 del "%MINICONDA_INSTALLER%"
 goto :eof
 
