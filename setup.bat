@@ -14,8 +14,8 @@ set MINICONDA_URL=https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-
 set MINICONDA_INSTALLER=Miniconda3-latest-Windows-x86_64.exe
 curl -o "%MINICONDA_INSTALLER%" "%MINICONDA_URL%"
 
-REM Install Miniconda
-start /wait "" "%MINICONDA_INSTALLER%" /InstallationType=JustMe /RegisterPython=0 /D=%CD%\%MINICONDA_DIR%
+REM Silently install Miniconda
+start /wait "" "%MINICONDA_INSTALLER%" /InstallationType=JustMe /RegisterPython=0 /S /D=%CD%\%MINICONDA_DIR%
 del "%MINICONDA_INSTALLER%"
 goto :eof
 
@@ -51,19 +51,21 @@ echo "4) Gradio UI"
 set /p choice="Enter your choice (1-4): "
 
 if "%choice%"=="1" (
-    call :create_environment "CPU"
+    set VERSION="CPU"
 ) else if "%choice%"=="2" (
-    call :create_environment "GPU"
+    set VERSION="GPU"
 ) else if "%choice%"=="3" (
-    call :create_environment "TensorFlow GPU"
+    set VERSION="TensorFlow GPU"
 ) else if "%choice%"=="4" (
-    call :create_environment "Gradio UI"
+    set VERSION="Gradio UI"
 ) else (
     echo "Invalid choice."
     exit /b 1
 )
 
-echo "Setup complete."
-
-REM Download checkpoints after environment creation
-.\miniconda\envs\pdf2muse\python.exe download_checkpoints.py
+if defined VERSION (
+    call :create_environment "%VERSION%"
+    echo "Setup complete."
+    REM Download checkpoints after environment creation
+    .\miniconda\envs\pdf2muse\python.exe download_checkpoints.py
+)
