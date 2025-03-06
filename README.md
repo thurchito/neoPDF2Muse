@@ -8,9 +8,6 @@ This project would not have been possible without the excellent work done by the
 
 We also thank Google ☁️ for providing a free cloud trial, which enabled us to use the Gemini models and their awesomely large context window to "vibecode" this repository.
 
-## 🏷️ Tags
-
-`vibe-coding`, `optical-music-recognition`, `img2xml`
 
 ## ⚙️ Dependencies
 
