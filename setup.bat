@@ -47,8 +47,7 @@ echo "Select installation version:"
 echo "1) CPU"
 echo "2) GPU (ONNX Runtime)"
 echo "3) TensorFlow GPU"
-echo "4) Gradio UI"
-set /p choice="Enter your choice (1-4): "
+set /p choice="Enter your choice (1-3): "
 pause
 
 if "%choice%"=="1" (
@@ -57,8 +56,6 @@ if "%choice%"=="1" (
     set VERSION=GPU
 ) else if "%choice%"=="3" (
     set VERSION="TensorFlow GPU"
-) else if "%choice%"=="4" (
-    set VERSION="Gradio UI"
 ) else (
     echo "Invalid choice."
     exit /b 1

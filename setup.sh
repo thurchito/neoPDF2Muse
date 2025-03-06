@@ -59,8 +59,7 @@ echo "Select installation version:"
 echo "1) CPU"
 echo "2) GPU (ONNX Runtime)"
 echo "3) TensorFlow GPU"
-echo "4) Gradio UI"
-read -p "Enter your choice (1-4): " choice
+read -p "Enter your choice (1-3): " choice
 
 case $choice in
     1)
@@ -71,9 +70,6 @@ case $choice in
         ;;
     3)
         create_environment "TensorFlow GPU"
-        ;;
-    4)
-        create_environment "Gradio UI"
         ;;
     *)
         echo "Invalid choice."
