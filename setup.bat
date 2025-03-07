@@ -1,11 +1,12 @@
 @echo off
+SETLOCAL DisableDelayedExpansion
 
 REM Function to install Miniconda
 :install_miniconda
-echo "Installing Miniconda..."
+ECHO. "Installing Miniconda..."
 set MINICONDA_DIR=miniconda
 if exist "%MINICONDA_DIR%" (
-    echo "Miniconda is already installed in %MINICONDA_DIR%."
+    ECHO. "Miniconda is already installed in %MINICONDA_DIR%."
     goto :eof
 )
 
@@ -17,12 +18,13 @@ curl -o "%MINICONDA_INSTALLER%" "%MINICONDA_URL%"
 REM Silently install Miniconda
 start /wait "" "%MINICONDA_INSTALLER%" /InstallationType=JustMe /RegisterPython=0 /S /D=%CD%\%MINICONDA_DIR%
 del "%MINICONDA_INSTALLER%"
+timeout /t 10 /nobreak > nul
 goto :eof
 
 REM Function to create Conda environment
 :create_environment
 set VERSION=%1
-echo "Creating Conda environment for %VERSION%..."
+ECHO. "Creating Conda environment for %VERSION%..."
 
 if "%VERSION%"=="CPU" (
     set requirements_file=requirements-cpu.yml
@@ -33,7 +35,7 @@ if "%VERSION%"=="CPU" (
 ) else if "%VERSION%"=="Gradio UI" (
     set requirements_file=requirements-cpu.yml  REM Use CPU dependencies as base for Gradio
 ) else (
-    echo "Invalid version: %VERSION%"
+    ECHO. "Invalid version: %VERSION%"
     exit /b 1
 )
 
@@ -44,33 +46,17 @@ REM Main script logic
 call :install_miniconda
 
 if not exist "%MINICONDA_DIR%" (
-    echo "Error: Miniconda installation failed. The directory %MINICONDA_DIR% does not exist."
+    ECHO. "Error: Miniconda installation failed. The directory %MINICONDA_DIR% does not exist."
     exit /b 1
 )
 
-echo "Select installation version:"
-echo "1) CPU"
-echo "2) GPU (ONNX Runtime)"
-echo "3) TensorFlow GPU"
+ECHO. "Select installation version:"
+ECHO. "1) CPU"
+ECHO. "2) GPU (ONNX Runtime)"
+ECHO. "3) TensorFlow GPU"
 set /p choice="Enter your choice (1-3): "
-pause
 
-echo "Before calling create_environment"
-
-if "%choice%"=="1" (
-    set VERSION=CPU
-) else if "%choice%"=="2" (
-    set VERSION=GPU
-) else if "%choice%"=="3" (
-    set VERSION="TensorFlow GPU"
-) else (
-    echo "Invalid choice."
-    exit /b 1
-)
-
-echo "After setting VERSION, VERSION is %VERSION%"
-
-if defined VERSION call :create_environment "%VERSION%"
+ECHO. "Before calling create_environment"
 
 if "%choice%"=="1" (
     set VERSION=CPU
@@ -79,13 +65,15 @@ if "%choice%"=="1" (
 ) else if "%choice%"=="3" (
     set VERSION="TensorFlow GPU"
 ) else (
-    echo "Invalid choice."
+    ECHO. "Invalid choice."
     exit /b 1
 )
 
+ECHO. "After setting VERSION, VERSION is %VERSION%"
+
 if defined VERSION call :create_environment "%VERSION%"
 
-echo "Setup complete."
+ECHO. "Setup complete."
 
 REM Download checkpoints after environment creation
 if defined VERSION .\miniconda\envs\pdf2muse\python.exe download_checkpoints.py
