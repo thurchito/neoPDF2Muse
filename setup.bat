@@ -1,3 +1,4 @@
+cmd /k
 @echo off
 SETLOCAL DisableDelayedExpansion
 
