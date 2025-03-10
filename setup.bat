@@ -1,4 +1,3 @@
-cmd /k
 @echo off
 SETLOCAL DisableDelayedExpansion
 
@@ -78,3 +77,5 @@ ECHO. "Setup complete."
 
 REM Download checkpoints after environment creation
 if defined VERSION .\miniconda\envs\pdf2muse\python.exe download_checkpoints.py
+
+pause
