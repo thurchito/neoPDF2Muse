@@ -58,5 +58,5 @@ exit /b
     for %%F in ("%pdf_path%") do echo %%~nxF > "%TEMP%\imgdirfull.tmp"
     set /p imgdirfull=<"%TEMP%\imgdir.tmp"
     call set "imgdir=%%~nimgdirfull%%"
-    rmdir /s /q"%output_dir%\%imgdir%"
+    rmdir /s /q "%output_dir%\%imgdir%" >nul
     exit /b
