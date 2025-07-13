@@ -1,32 +1,30 @@
-# neoPDF2Muse 🎶
+![alt text](https://github.com/dangvd/crystal-remix-icon-theme/blob/main/128x128/places/folder-music.png?raw=true)
+# neoPDF2Muse
 
-neoPDF2Muse is a command-line tool that converts PDF files of sheet music into MusicXML 🎼 and MuseScore (.mscx) files. It leverages the power of the [homr](https://github.com/BreezeWhite/homr) optical music recognition library to transcribe the music from the PDF.
+neoPDF2Muse is a command-line tool that converts PDF files of sheet music into MusicXML 🎼 and MuseScore (.mscx) files. It leverages the power of the [*homr*](https://github.com/liebharc/homr) Python module to transcribe the music from the PDF.
 
 ## 🙏 Acknowledgements
 
-This project would not have been possible without the excellent work done by the [homr](https://github.com/BreezeWhite/homr) project. We extend our sincere gratitude to the homr team for creating such a powerful and versatile optical music recognition library.
-
-We also thank Google ☁️ for providing a free cloud trial, which enabled us to use the Gemini models and their awesomely large context window to "vibecode" this repository.
-
+This project would not have been possible without the excellent work done by the [*homr*](https://github.com/liebharc/homr) project. We extend our sincere gratitude to the *homr* team for creating such a powerful and versatile optical music recognition library.
 
 ## ⚙️ Dependencies
 
 This project requires the following:
 
-*   Python 3.9 🐍
+*   Python 3.10. 🐍
 *   **Python Libraries:** 📚
     *   `homr`
     *   `pdf2image`
     *   `requests`
 *   **External Tools:** 🛠️
-    *   Poppler (for pdf to image conversion)
+    *   Poppler (for pdf to image conversion).
 
 ## ⬇️ Installation
 
-1.  **Install Python:** Make sure you have Python 3.7 or higher installed. You can check your Python version by running `python --version` or `python3 --version` in your terminal.
+1.  **Install Python:** Make sure you have Python 3.10 or higher installed. You can check your Python version by running `python --version` or `python3 --version` in your terminal.
 2.  **Clone the Repository:**
     ```bash
-    git clone https://github.com/thedivergentai/neoPDF2Muse.git
+    git clone https://github.com/thurchito/neoPDF2Muse.git
     cd neoPDF2Muse
     ```
 3.  **Run the Setup Script:** ⚙️
@@ -60,8 +58,7 @@ To test your installation, run the `run_pdf2muse.sh` or `run_pdf2muse.bat` scrip
 
 ## 📜 Scripts
 
-*   **`main.py`:** The main entry point of the application. It orchestrates the entire process: downloading checkpoints, converting PDF to PNG, running homr, joining MusicXML files, converting to MuseScore format, and cleaning up temporary files.
-*   **`download_checkpoints.py`:** Handles downloading the pre-trained homr model checkpoints if they are not already present in the expected location.
+*   **`main.py`:** The main entry point of the application. It orchestrates the entire process: downloading checkpoints, converting PDF to PNG, running *homr*, joining MusicXML files, converting to MuseScore format, and cleaning up temporary files.
 *   **`pdf_to_png.py`:** Converts each page of a PDF file into a separate PNG image using the `pdf2image` library (which depends on Poppler).
 *   **`musicxml_utils.py`:** Provides utility functions for working with MusicXML files:
     *   `join_musicxml_files()`: Combines multiple MusicXML files (typically one per page) into a single MusicXML file.
