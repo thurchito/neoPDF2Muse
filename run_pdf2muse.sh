@@ -45,7 +45,7 @@ case $choice in
         basename "$pdf_path" > "$tmp_file"
         imgdirfull=$(<"$tmp_file")
         imgdir="${imgdirfull%.*}"
-        rm -rf "$output_dir/$imgdir"
+        rm -rf "$output_dir/$imgdir" >/dev/null
         python main.py --use-tf "$pdf_path" "$output_dir"
         ;;
     4)
