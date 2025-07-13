@@ -11,7 +11,7 @@ This project would not have been possible without the excellent work done by the
 
 This project requires the following:
 
-*   Python 3.10. 🐍
+*   Python 3.10; 🐍
 *   **Python Libraries:** 📚
     *   `homr`
     *   `pdf2image`

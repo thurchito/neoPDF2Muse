@@ -19,9 +19,9 @@ def main(env_path, pdf_path, output_dir, deskew=True, use_tf=False, save_cache=F
     """
 
     env_path = os.path.abspath(env_path)
-    output_dir = os.path.abspath(output_dir)
-    image_dir = os.path.join(output_dir, "images")
-    musicxml_dir = os.path.join(output_dir, "musicxml")
+    output_dir = os.path.join(os.path.abspath(output_dir), os.path.splitext(os.path.basename(pdf_path))[0])
+    image_dir = os.path.join(os.path.abspath(output_dir), os.path.splitext(os.path.basename(pdf_path))[0], "images")
+    musicxml_dir = os.path.join(os.path.abspath(output_dir), os.path.splitext(os.path.basename(pdf_path))[0],"musicxml")
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir, exist_ok=True)

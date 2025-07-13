@@ -15,6 +15,7 @@ def pdf_to_png(pdf_path, output_dir):
         os.makedirs(output_dir)
 
     try:
+        print("Splitting PDF into PNG images...")
         images = convert_from_path(pdf_path)
         for i, image in enumerate(images):
             image.save(os.path.join(output_dir, f"page_{i}.png"), "PNG")

@@ -14,7 +14,8 @@ ping localhost -n 5 >nul
 call :fileselect
 if "%pdf_path%"=="" goto :abort
 if "%output_dir%"=="" goto :abort
-start /b "" "zenity.exe" --info --title="neoPDF2Muse" --text="Processing..." --width=100 --height=50
+start /b "" "zenity.exe" --info --title="neoPDF2Muse" --text="Processing; Please wait..." --width=100 --height=50
+echo Initializing conversion...
 if "%choice%"=="CPU" python main.py "%CD%\%MINICONDA_DIR%\envs\neoPDF2Muse" "%pdf_path%" "%output_dir%"
 if "%choice%"=="GPU (ONNX Runtime)" python main.py "%CD%\%MINICONDA_DIR%\envs\neoPDF2Muse" "%pdf_path%" "%output_dir%"
 if "%choice%"=="TensorFlow GPU" python main.py --use-tf "%CD%\%MINICONDA_DIR%\envs\neoPDF2Muse" "%pdf_path%" "%output_dir%"
@@ -54,4 +55,8 @@ exit /b
     if not defined output_dir (
         goto :abort
     )
+    for %%F in ("%pdf_path%") do echo %%~nxF > "%TEMP%\imgdirfull.tmp"
+    set /p imgdirfull=<"%TEMP%\imgdir.tmp"
+    call set "imgdir=%%~nimgdirfull%%"
+    rmdir /s /q"%output_dir%\%imgdir%"
     exit /b
