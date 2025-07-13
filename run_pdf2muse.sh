@@ -16,21 +16,36 @@ case $choice in
         echo "Configuring \"CPU\" runtime..."
         read -p "Enter the path to the PDF file: " pdf_path
         read -p "Enter the output directory (default: output): " output_dir
-        output_dir=${output_dir:-output}
+        echo "Processing; Please wait..."
+        echo "Initializing conversion..."
+        basename "$pdf_path" > "$tmp_file"
+        imgdirfull=$(<"$tmp_file")
+        imgdir="${imgdirfull%.*}"
+        rm -rf "$output_dir/$imgdir"
         python main.py "$pdf_path" "$output_dir"
         ;;
     2)
         echo "Configuring \"GPU (ONNX)\" runtime..."
         read -p "Enter the path to the PDF file: " pdf_path
         read -p "Enter the output directory (default: output): " output_dir
-        output_dir=${output_dir:-output}
+        echo "Processing; Please wait..."
+        echo "Initializing conversion..."
+        basename "$pdf_path" > "$tmp_file"
+        imgdirfull=$(<"$tmp_file")
+        imgdir="${imgdirfull%.*}"
+        rm -rf "$output_dir/$imgdir"
         python main.py "$pdf_path" "$output_dir"
         ;;
     3)
         echo "Configuring \"TensorFlow GPU\" runtime..."
-        read -p "Enter the path to the PDF file: " pdf_path
+        read -p "Enter the complete path to the PDF file: " pdf_path
         read -p "Enter the output directory (default: output): " output_dir
-        output_dir=${output_dir:-output}
+        echo "Processing; Please wait..."
+        echo "Initializing conversion..."
+        basename "$pdf_path" > "$tmp_file"
+        imgdirfull=$(<"$tmp_file")
+        imgdir="${imgdirfull%.*}"
+        rm -rf "$output_dir/$imgdir"
         python main.py --use-tf "$pdf_path" "$output_dir"
         ;;
     4)
@@ -40,6 +55,7 @@ case $choice in
             echo "Gradio is not installed. Installing..."
             pip install gradio
         fi
+        echo "Processing; Please wait..."
         python gradio_app.py
         ;;
     *)
