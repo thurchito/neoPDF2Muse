@@ -7,18 +7,6 @@ neoPDF2Muse is a command-line tool that converts PDF files of sheet music into M
 
 This project would not have been possible without the excellent work done by the [*homr*](https://github.com/liebharc/homr) project. We extend our sincere gratitude to the *homr* team for creating such a powerful and versatile optical music recognition library.
 
-## ⚙️ Dependencies
-
-This project requires the following:
-
-*   Python 3.10; 🐍
-*   **Python Libraries:** 📚
-    *   `homr`
-    *   `pdf2image`
-    *   `requests`
-*   **External Tools:** 🛠️
-    *   Poppler (for pdf to image conversion).
-
 ## ⬇️ Installation
 
 1.  **Install Python:** Make sure you have Python 3.10 or higher installed. You can check your Python version by running `python --version` or `python3 --version` in your terminal.
