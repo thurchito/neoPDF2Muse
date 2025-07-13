@@ -6,7 +6,7 @@ import argparse
 from pdf_to_png import pdf_to_png
 from musicxml_utils import join_musicxml_files, convert_to_musescore_format
 
-def main(env_path, pdf_path, output_dir, deskew=True, use_tf=False, save_cache=False):
+def main(pdf_path, output_dir, deskew=True, use_tf=False, save_cache=False):
     """
     Converts a PDF to MusicXML and MuseScore format using homr.
 
@@ -18,10 +18,10 @@ def main(env_path, pdf_path, output_dir, deskew=True, use_tf=False, save_cache=F
         save_cache (bool): Save model predictions for future use (default: False).
     """
 
-    env_path = os.path.abspath(env_path)
     output_dir = os.path.join(os.path.abspath(output_dir), os.path.splitext(os.path.basename(pdf_path))[0])
-    image_dir = os.path.join(os.path.abspath(output_dir), os.path.splitext(os.path.basename(pdf_path))[0], "images")
-    musicxml_dir = os.path.join(os.path.abspath(output_dir), os.path.splitext(os.path.basename(pdf_path))[0],"musicxml")
+    image_dir = os.path.join(output_dir, "images")
+    musicxml_dir = os.path.join(output_dir, "musicxml")
+
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir, exist_ok=True)
@@ -82,7 +82,6 @@ def main(env_path, pdf_path, output_dir, deskew=True, use_tf=False, save_cache=F
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Convert PDF sheet music to MusicXML and MuseScore format.")
-    parser.add_argument("env_path", help="Path to the virtual environment (used for downloading checkpoints).")
     parser.add_argument("pdf_path", nargs='?', help="Path to the input PDF file.")
     parser.add_argument("output_dir", nargs='?', help="Path to the output directory.")
     parser.add_argument("--use-tf", action="store_true", help="Use Tensorflow for model inference. Default is to use Onnxruntime. (default: False)")

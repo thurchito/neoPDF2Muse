@@ -16,9 +16,9 @@ if "%pdf_path%"=="" goto :abort
 if "%output_dir%"=="" goto :abort
 start /b "" "zenity.exe" --info --title="neoPDF2Muse" --text="Processing; Please wait..." --width=100 --height=50
 echo Initializing conversion...
-if "%choice%"=="CPU" python main.py "%CD%\%MINICONDA_DIR%\envs\neoPDF2Muse" "%pdf_path%" "%output_dir%"
-if "%choice%"=="GPU (ONNX Runtime)" python main.py "%CD%\%MINICONDA_DIR%\envs\neoPDF2Muse" "%pdf_path%" "%output_dir%"
-if "%choice%"=="TensorFlow GPU" python main.py --use-tf "%CD%\%MINICONDA_DIR%\envs\neoPDF2Muse" "%pdf_path%" "%output_dir%"
+if "%choice%"=="CPU" python main.py "%pdf_path%" "%output_dir%"
+if "%choice%"=="GPU (ONNX Runtime)" python main.py "%pdf_path%" "%output_dir%"
+if "%choice%"=="TensorFlow GPU" python main.py --use-tf "%pdf_path%" "%output_dir%"
 if "%choice%"=="Gradio UI" (
     ping localhost -n 5 >nul
     taskkill /f /im zenity.exe >nul & start /b "" "zenity.exe" --info --title="neoPDF2Muse" --text="Configuring \"Gradio UI\" runtime..." --width=200 --height=50
@@ -56,7 +56,7 @@ exit /b
         goto :abort
     )
     for %%F in ("%pdf_path%") do echo %%~nxF > "%TEMP%\imgdirfull.tmp"
-    set /p imgdirfull=<"%TEMP%\imgdir.tmp"
-    call set "imgdir=%%~nimgdirfull%%"
+    set /p imgdirfull=<"%TEMP%\imgdirfull.tmp"
+    for %%G in ("%imgdirfull%") do set "imgdir=%%~nG"
     rmdir /s /q "%output_dir%\%imgdir%" >nul
     exit /b

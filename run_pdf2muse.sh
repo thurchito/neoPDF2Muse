@@ -15,37 +15,67 @@ case $choice in
     1)
         echo "Configuring \"CPU\" runtime..."
         read -p "Enter the path to the PDF file: " pdf_path
+        if [[ ! -f "$pdf_path" ]]; then
+        echo "PDF file not found: $pdf_path"
+        exit 1
+        fi
         read -p "Enter the output directory (default: output): " output_dir
+        output_dir="${output_dir:-output}"
         echo "Processing; Please wait..."
         echo "Initializing conversion..."
+        tmp_file=$(mktemp)
         basename "$pdf_path" > "$tmp_file"
         imgdirfull=$(<"$tmp_file")
         imgdir="${imgdirfull%.*}"
+        if [[ -d "$output_dir/$imgdir" ]]; then
+        echo "Warning: Output directory '$output_dir/$imgdir' already exists. Deleting..."
         rm -rf "$output_dir/$imgdir"
+        fi
+        rm -f "$tmp_file"
         python main.py "$pdf_path" "$output_dir"
         ;;
     2)
         echo "Configuring \"GPU (ONNX)\" runtime..."
         read -p "Enter the path to the PDF file: " pdf_path
+        if [[ ! -f "$pdf_path" ]]; then
+        echo "PDF file not found: $pdf_path"
+        exit 1
+        fi
         read -p "Enter the output directory (default: output): " output_dir
+        output_dir="${output_dir:-output}"
         echo "Processing; Please wait..."
         echo "Initializing conversion..."
+        tmp_file=$(mktemp)
         basename "$pdf_path" > "$tmp_file"
         imgdirfull=$(<"$tmp_file")
         imgdir="${imgdirfull%.*}"
+        if [[ -d "$output_dir/$imgdir" ]]; then
+        echo "Warning: Output directory '$output_dir/$imgdir' already exists. Deleting..."
         rm -rf "$output_dir/$imgdir"
+        fi
+        rm -f "$tmp_file"
         python main.py "$pdf_path" "$output_dir"
         ;;
     3)
         echo "Configuring \"TensorFlow GPU\" runtime..."
         read -p "Enter the complete path to the PDF file: " pdf_path
+        if [[ ! -f "$pdf_path" ]]; then
+        echo "PDF file not found: $pdf_path"
+        exit 1
+        fi
         read -p "Enter the output directory (default: output): " output_dir
+        output_dir="${output_dir:-output}"
         echo "Processing; Please wait..."
         echo "Initializing conversion..."
+        tmp_file=$(mktemp)
         basename "$pdf_path" > "$tmp_file"
         imgdirfull=$(<"$tmp_file")
         imgdir="${imgdirfull%.*}"
-        rm -rf "$output_dir/$imgdir" >/dev/null
+        if [[ -d "$output_dir/$imgdir" ]]; then
+        echo "Warning: Output directory '$output_dir/$imgdir' already exists. Deleting..."
+        rm -rf "$output_dir/$imgdir"
+        fi
+        rm -f "$tmp_file"
         python main.py --use-tf "$pdf_path" "$output_dir"
         ;;
     4)

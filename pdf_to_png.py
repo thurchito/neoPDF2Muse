@@ -16,10 +16,10 @@ def pdf_to_png(pdf_path, output_dir):
 
     try:
         print("Splitting PDF into PNG images...")
-        images = convert_from_path(pdf_path)
+        images = convert_from_path(pdf_path, dpi=300)
         for i, image in enumerate(images):
             image.save(os.path.join(output_dir, f"page_{i}.png"), "PNG")
-        print("PDF to PNG conversion complete!")
+        print(f"PDF to PNG conversion complete! Images saved to: {output_dir}")
 
     except Exception as e:
         print(f"Error processing PDF: {e}")
