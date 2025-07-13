@@ -4,7 +4,7 @@ from main import main  # Import the main function from main.py
 
 def convert_pdf_to_musicxml(pdf_file, output_dir, deskew):
     """
-    Converts a PDF to MusicXML and MuseScore format using oemer.
+    Converts a PDF to MusicXML and MuseScore format using homr.
 
     Args:
         pdf_file (file): The uploaded PDF file.

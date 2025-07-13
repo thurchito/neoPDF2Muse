@@ -3,13 +3,12 @@ import sys
 import shutil
 import subprocess
 import argparse
-from download_checkpoints import download_checkpoints
 from pdf_to_png import pdf_to_png
 from musicxml_utils import join_musicxml_files, convert_to_musescore_format
 
-def main(pdf_path, output_dir, deskew=True, use_tf=False, save_cache=False):
+def main(env_path, pdf_path, output_dir, deskew=True, use_tf=False, save_cache=False):
     """
-    Converts a PDF to MusicXML and MuseScore format using oemer.
+    Converts a PDF to MusicXML and MuseScore format using homr.
 
     Args:
         pdf_path (str): Path to the PDF file.
@@ -19,7 +18,7 @@ def main(pdf_path, output_dir, deskew=True, use_tf=False, save_cache=False):
         save_cache (bool): Save model predictions for future use (default: False).
     """
 
-    env_path = "C:/Users/djtri/miniconda3/envs/PDF2Muse"
+    env_path = os.path.abspath(env_path)
     output_dir = os.path.abspath(output_dir)
     image_dir = os.path.join(output_dir, "images")
     musicxml_dir = os.path.join(output_dir, "musicxml")
@@ -31,33 +30,30 @@ def main(pdf_path, output_dir, deskew=True, use_tf=False, save_cache=False):
     if not os.path.exists(musicxml_dir):
         os.makedirs(musicxml_dir, exist_ok=True)
 
-    # Download checkpoints
-    download_checkpoints(env_path)
-
     # Convert PDF to PNG images
     pdf_to_png(pdf_path, image_dir)
 
-    # Run oemer on each PNG image
+    # Run homr on each PNG image
     original_dir = os.getcwd()
     os.chdir(output_dir)
     for filename in os.listdir(image_dir):
         if filename.endswith(".png"):
             image_path = os.path.join(image_dir, filename)
             try:
-                command = ["oemer", image_path]
+                command = ["homr", image_path]
                 if not deskew:
-                    command.insert(1, "--without-deskew")
+                    command.append("--without-deskew")
                 if use_tf:
-                    command.insert(1, "--use-tf")
+                    command.append("--use-tf")
                 if save_cache:
-                    command.insert(1, "--save-cache")
+                    command.append("--save-cache")
                 result = subprocess.run(
                     command,
                     check=True,
                     capture_output=True,
                     text=True,
                 )
-                print(result.stdout)  # Print the output of oemer
+                print(result.stdout)  # Print the output of homr
                 print(f"Successfully processed {filename}")
                 # Move the musicxml file to the musicxml directory
                 for file in os.listdir("."):
@@ -86,9 +82,9 @@ def main(pdf_path, output_dir, deskew=True, use_tf=False, save_cache=False):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Convert PDF sheet music to MusicXML and MuseScore format.")
+    parser.add_argument("env_path", help="Path to the virtual environment (used for downloading checkpoints).")
     parser.add_argument("pdf_path", nargs='?', help="Path to the input PDF file.")
     parser.add_argument("output_dir", nargs='?', help="Path to the output directory.")
-    parser.add_argument("-o", "--output-path", dest="output_path", help="Path to output the result file. (default: ./)")
     parser.add_argument("--use-tf", action="store_true", help="Use Tensorflow for model inference. Default is to use Onnxruntime. (default: False)")
     parser.add_argument("--save-cache", action="store_true", help="Save the model predictions and the next time won't need to predict again. (default: False)")
     parser.add_argument("-d", "--without-deskew", dest="deskew", action="store_false", help="Disable the deskewing step if you are sure the image has no skew. (default: False)")
@@ -101,7 +97,7 @@ if __name__ == "__main__":
         print("Launching Gradio UI")
         subprocess.run(["python", "gradio_app.py"])
     elif args.pdf_path and args.output_dir:
-        main(args.pdf_path, args.output_dir, args.deskew, args.use_tf, args.save_cache)
+        main(args.env_path, args.pdf_path, args.output_dir, args.deskew, args.use_tf, args.save_cache)
     else:
         parser.print_help()
         sys.exit(1)

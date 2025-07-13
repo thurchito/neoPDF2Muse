@@ -1,4 +1,5 @@
 #!/bin/bash
+echo -e "\033[1;33mneoPDF2Muse v1.0\033[0m"
 
 # Function to install Miniconda
 install_miniconda() {
@@ -29,7 +30,7 @@ install_miniconda() {
 # Function to create Conda environment
 create_environment() {
     VERSION=$1
-    echo "Creating Conda environment for $VERSION..."
+    echo "Creating Conda environment for \"$VERSION\"..."
     case $VERSION in
         CPU)
             requirements_file="requirements-cpu.yml"
@@ -44,12 +45,12 @@ create_environment() {
             requirements_file="requirements-cpu.yml" # Use CPU dependencies as base for Gradio
             ;;
         *)
-            echo "Invalid version: $VERSION"
+            echo "Invalid version: \"$VERSION\""
             exit 1
             ;;
     esac
 
-  ./miniconda/bin/conda env create -f "$requirements_file" -n pdf2muse --prefix ./miniconda/envs/pdf2muse
+  ./miniconda/bin/conda env create -f "$requirements_file" -n neoPDF2Muse --prefix ./miniconda/envs/neoPDF2Muse
 }
 
 # Main script logic
@@ -79,4 +80,4 @@ esac
 echo "Setup complete."
 
 # Download checkpoints after environment creation
-./miniconda/envs/pdf2muse/bin/python download_checkpoints.py
+./miniconda/envs/neoPDF2Muse/bin/python download_checkpoints.py

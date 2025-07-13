@@ -1,4 +1,5 @@
 #!/bin/bash
+echo -e "\033[1;33mneoPDF2Muse v1.0\033[0m"
 
 echo "Select runtime version:"
 echo "1) CPU"
@@ -8,32 +9,32 @@ echo "4) Gradio UI"
 read -p "Enter your choice (1-4): " choice
 
 # Activate the Conda environment
-source ./miniconda/bin/activate ./miniconda/envs/pdf2muse
+source ./miniconda/bin/activate ./miniconda/envs/neoPDF2Muse
 
 case $choice in
     1)
-        echo "Running with CPU..."
+        echo "Configuring \"CPU\" runtime..."
         read -p "Enter the path to the PDF file: " pdf_path
         read -p "Enter the output directory (default: output): " output_dir
         output_dir=${output_dir:-output}
         python main.py "$pdf_path" "$output_dir"
         ;;
     2)
-        echo "Running with GPU (ONNX Runtime)..."
+        echo "Configuring \"GPU (ONNX)\" runtime..."
         read -p "Enter the path to the PDF file: " pdf_path
         read -p "Enter the output directory (default: output): " output_dir
         output_dir=${output_dir:-output}
         python main.py "$pdf_path" "$output_dir"
         ;;
     3)
-        echo "Running with TensorFlow GPU..."
+        echo "Configuring \"TensorFlow GPU\" runtime..."
         read -p "Enter the path to the PDF file: " pdf_path
         read -p "Enter the output directory (default: output): " output_dir
         output_dir=${output_dir:-output}
         python main.py --use-tf "$pdf_path" "$output_dir"
         ;;
     4)
-        echo "Running Gradio UI..."
+        echo "Configuring \"Gradio UI\"..."
         # Check if Gradio is installed
         if ! python -c "import gradio" 2>/dev/null; then
             echo "Gradio is not installed. Installing..."

@@ -1,13 +1,15 @@
-name: pdf2muse
+name: neoPDF2Muse
 channels:
   - conda-forge
 dependencies:
-  - python=3.9
+  - python=3.10
   - pip
   - tensorflow
   - tf2onnx
-  - oemer
   - pillow
   - pdf2image
   - requests
   - poppler
+  - pip:
+    - --index-url https://pypi.org/simple
+    - homr
