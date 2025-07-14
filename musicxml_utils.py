@@ -2,7 +2,7 @@ import os
 import zipfile
 import xml.etree.ElementTree as ET
 import subprocess
-from msczyx import Score
+from mscxyz import Score
 
 def convert_to_musescore_format(input_file, output_file, format="mscx"):
     """
