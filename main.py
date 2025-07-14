@@ -96,7 +96,7 @@ if __name__ == "__main__":
         print("Launching Gradio UI")
         subprocess.run(["python", "gradio_app.py"])
     elif args.pdf_path and args.output_dir:
-        main(args.env_path, args.pdf_path, args.output_dir, args.deskew, args.use_tf, args.save_cache)
+        main(args.pdf_path, args.output_dir, args.deskew, args.use_tf, args.save_cache)
     else:
         parser.print_help()
         sys.exit(1)
