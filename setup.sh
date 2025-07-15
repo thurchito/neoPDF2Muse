@@ -11,11 +11,12 @@ install_miniconda() {
         return
     fi
 
+    OSTYPE="$(uname)"
     # Determine OS and download appropriate Miniconda installer
-    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    if [[ "$OSTYPE" == *"nux"* ]]; then
         MINICONDA_URL="https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
         MINICONDA_INSTALLER="Miniconda3-latest-Linux-x86_64.sh"
-    elif [[ "$OSTYPE" == "darwin"* ]]; then
+    elif [[ "$OSTYPE" == *"arwin"* ]]; then
         MINICONDA_URL="https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh"
         MINICONDA_INSTALLER="Miniconda3-latest-MacOSX-x86_64.sh"
     else
@@ -78,5 +79,6 @@ case $choice in
         exit 1
         ;;
 esac
-mv xml_generator.py ./miniconda/envs/neoPDF2Muse/Lib/site-packages/homr/xml_generator.py
+PYTHON_VERSION=$(./miniconda/envs/neoPDF2Muse/bin/python -c "import sys; print(f'python{sys.version_info.major}.{sys.version_info.minor}')")
+mv xml_generator.py ./miniconda/envs/neoPDF2Muse/lib/$PYTHON_VERSION/site-packages/homr/xml_generator.py
 echo "Setup complete."
