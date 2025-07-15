@@ -1,5 +1,6 @@
 #!/bin/bash
 echo -e "\033[1;33mneoPDF2Muse v1.0\033[0m"
+echo ""
 
 echo "Select runtime version:"
 echo "1) CPU"

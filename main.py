@@ -34,13 +34,14 @@ def main(pdf_path, output_dir, deskew=True, use_tf=False, save_cache=False):
     pdf_to_png(pdf_path, image_dir)
 
     # Run homr on each PNG image
+    print(f"Executing optical recognition...")
     original_dir = os.getcwd()
-    os.chdir(output_dir)
+    os.chdir(image_dir)
     for filename in os.listdir(image_dir):
         if filename.endswith(".png"):
             image_path = os.path.join(image_dir, filename)
             try:
-                command = ["homr", image_path]
+                command = ["homr", f"{image_path}"]
                 if not deskew:
                     command.append("--without-deskew")
                 if use_tf:
@@ -53,17 +54,15 @@ def main(pdf_path, output_dir, deskew=True, use_tf=False, save_cache=False):
                     capture_output=True,
                     text=True,
                 )
-                print(result.stdout)  # Print the output of homr
                 print(f"Successfully processed {filename}")
-                # Move the musicxml file to the musicxml directory
-                for file in os.listdir("."):
-                    if file.endswith(".musicxml"):
-                        shutil.move(file, musicxml_dir)
-
             except subprocess.CalledProcessError as e:
                 print(f"Error processing {filename}: {e.stderr}")
-    os.chdir(original_dir)
+    
+    for file in os.listdir(image_dir):
+        if file.endswith(".musicxml"):
+            shutil.move(os.path.join(image_dir, file), musicxml_dir)
 
+    os.chdir(original_dir)
     # Join the MusicXML files
     joined_musicxml_file = os.path.join(output_dir, "combined.musicxml")
     join_musicxml_files(musicxml_dir, joined_musicxml_file)
@@ -71,10 +70,6 @@ def main(pdf_path, output_dir, deskew=True, use_tf=False, save_cache=False):
     # Convert to MuseScore format
     musescore_file = os.path.join(output_dir, "combined.mscx")
     convert_to_musescore_format(joined_musicxml_file, musescore_file, format="mscx")
-
-    # Delete the image directory
-    shutil.rmtree(image_dir)
-    shutil.rmtree(musicxml_dir)
 
     print("PDF to MusicXML and MuseScore conversion complete!")
     return musescore_file

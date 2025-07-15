@@ -1,147 +1,77 @@
 import os
+import sys
 import zipfile
 import xml.etree.ElementTree as ET
 import subprocess
-from mscxyz import Score
+import platform
+import ms3
+from shutil import which
 
-def convert_to_musescore_format(input_file, output_file, format="mscx"):
-    """
-    Converts a MusicXML file to MuseScore format (.mscx or .mscz) using msczyx.
-
-    Args:
-        input_file (str): Path to the input MusicXML file.
-        output_file (str): Path to the output MuseScore file (.mscx or .mscz).
-        format (str): Output format: 'mscx' or 'mscz'.
-    """
-
-    try:
-        print("Reading MusicXML...")
-        score = Score.from_musicxml(input_file)
-
-        if format == "mscx":
-            score.write_mscx(output_file)
-        elif format == "mscz":
-            score.write_mscz(output_file)
-        else:
-            print("Unsupported format. Use 'mscx' or 'mscz'.")
-            return
-
-        print(f"Successfully converted {input_file} to {output_file}")
-
-    except FileNotFoundError:
-        print(f"File not found: {input_file}")
-    except Exception as e:
-        print(f"Error converting to MuseScore format: {e}")
+MXML_NS = "http://www.musicxml.org/ns/musicxml"
+ET.register_namespace("", MXML_NS)
 
 def join_musicxml_files(input_dir, output_file):
-    """
-    Joins multiple MusicXML files into a single MusicXML file.
+    files = sorted(f for f in os.listdir(input_dir) if f.lower().endswith(".musicxml"))
+    if not files:
+        raise ValueError("No .musicxml files found.")
 
-    Args:
-        input_dir (str): Directory containing the MusicXML files.
-        output_file (str): Path to the output MusicXML file.
-    """
-
-    # Get a list of all MusicXML files in the input directory
-    musicxml_files = sorted([f for f in os.listdir(input_dir) if f.endswith(".musicxml")])
-
-    if not musicxml_files:
-        print("No MusicXML files found in the input directory.")
-        return
-
-    # Parse the first MusicXML file to get the root element
-    first_musicxml_file = os.path.join(input_dir, musicxml_files[0])
-    tree = ET.parse(first_musicxml_file)
+    # Parse the first file and get its tree/root
+    first_path = os.path.join(input_dir, files[0])
+    tree = ET.parse(first_path)
     root = tree.getroot()
-    ns = {'ns': 'http://www.musicxml.org/ns/musicxml'}
-    part_list = root.find("ns:part-list", ns)
-    parts = root.findall("ns:part", ns) 
 
-    # Find the part list and part elements
-    part_list = root.find("part-list")
-    parts = root.findall("part")
+    # Grab the part-list from the first file
+    part_list = root.find(f"{{{MXML_NS}}}part-list")
+    parts      = {p.get("id"): p for p in root.findall(f"{{{MXML_NS}}}part")}
 
-    # Iterate over the remaining MusicXML files and append their part elements
-    for musicxml_file in musicxml_files[1:]:
-        musicxml_path = os.path.join(input_dir, musicxml_file)
-        tree = ET.parse(musicxml_path)
-        new_root = tree.getroot()
-        new_parts = new_root.findall("part")
-        for new_part in new_parts:
-            parts.append(new_part)
+    # Now loop over the rest
+    for fn in files[1:]:
+        path = os.path.join(input_dir, fn)
+        sub_tree = ET.parse(path)
+        sub_root = sub_tree.getroot()
 
-    # Remove existing parts and append the combined parts
-    for part in root.findall("part"):
-        root.remove(part)
-    for part in parts:
-        root.append(part)
+        # Merge score-part definitions
+        for sp in sub_root.findall(f".//{{{MXML_NS}}}score-part"):
+            pid = sp.get("id")
+            # only add if not already in master part-list
+            if part_list.find(f"{{{MXML_NS}}}score-part[@id='{pid}']") is None:
+                part_list.append(sp)
 
-    # Write the combined MusicXML to the output file
-    tree = ET.ElementTree(root)
-    tree.write(output_file, encoding="UTF-8", xml_declaration=True, default_namespace=None)
+        # Merge the actual <part> elements
+        for part in sub_root.findall(f"{{{MXML_NS}}}part"):
+            parts[part.get("id")] = part
 
-    print(f"Successfully joined MusicXML files into {output_file}")
+    # Remove all old <part> nodes then re-append in sorted order
+    for old in list(root.findall(f"{{{MXML_NS}}}part")):
+        root.remove(old)
+    for pid in sorted(parts):
+        root.append(parts[pid])
 
+    # Write it back out
+    tree.write(output_file,
+               encoding="UTF-8",
+               xml_declaration=True)
+    print(f"Written combined MusicXML to {output_file}")
 
 def convert_to_musescore_format(input_file, output_file, format="mscx"):
-    """
-    Converts a MusicXML file to MuseScore format (.mscx).
+    if not os.path.isfile(input_file):
+        raise FileNotFoundError(f"Input file does not exist: {input_file}")
 
-    Args:
-        input_file (str): Path to the input MusicXML file.
-        output_file (str): Path to the output MuseScore file.
-    """
+    # Load MusicXML into ms3 Score object
+    score = ms3.Score(input_file)
 
-    if format != "mscx":
-        print("Only .mscx conversion is supported at this time.")
-        return
-
-    try:
-        # Parse the MusicXML file
-        tree = ET.parse(input_file)
-        root = tree.getroot()
-        ns = {'ns': 'http://www.musicxml.org/ns/musicxml'}
-        part_list = root.find("ns:part-list", ns)
-        parts = root.findall("ns:part", ns)
-
-        # Create the root element for the MuseScore file
-        musescore = ET.Element("museScore", {"version": "4.0"})
-        # Create the score element
-        score = ET.SubElement(musescore, "Score")
-
-        # Copy the division from the MusicXML file
-        division = root.find("division")
-        if division is not None:
-            score.append(division)
-
-        # Copy the parts from the MusicXML file
-        part_list = root.find("part-list")
-        if part_list is not None:
-            score.append(part_list)
-
-        parts = root.findall("part")
-        for part in parts:
-            score.append(part)
-
-        # Create the ElementTree and write to the output file
-        mscx_tree = ET.ElementTree(musescore)
-        mscx_tree.write(output_file, encoding="UTF-8", xml_declaration=True, default_namespace=None)
-
-        print(f"Successfully converted {input_file} to {output_file}")
-
-    except FileNotFoundError:
-        print(f"File not found: {input_file}")
-    except Exception as e:
-        print(f"Error converting file: {e}")
+    # Save as .mscz
+    score.save(output_file)
+    print(f"Conversion successful! Output saved to: {output_file}")
 
 if __name__ == '__main__':
     # Example usage
     # Create a dummy directory with dummy musicxml files
     os.makedirs("test_musicxml", exist_ok=True)
     with open("test_musicxml/page1.musicxml", "w") as f:
-        f.write("<score-partwise version='3.1'><part id='P1'><measure number='1'><note><pitch><step>C</step><octave>4</octave></pitch><duration>4</duration></note></measure></part></score>")
+        f.write("<score-partwise version='3.1'><part id='P1'><measure number='1'><note><pitch><step>C</step><octave>4</octave></pitch><duration>4</duration></note></measure></score-partwise>")
     with open("test_musicxml/page2.musicxml", "w") as f:
-        f.write("<score-partwise version='3.1'><part id='P1'><measure number='2'><note><pitch><step>D</step><octave>4</octave></pitch><duration>4</duration></note></measure></part></score>")
+        f.write("<score-partwise version='3.1'><part id='P1'><measure number='2'><note><pitch><step>D</step><octave>4</octave></pitch><duration>4</duration></note></measure></score-partwise>")
 
     join_musicxml_files("test_musicxml", "combined.musicxml")
     convert_to_musescore_format("combined.musicxml", "combined.mscx")

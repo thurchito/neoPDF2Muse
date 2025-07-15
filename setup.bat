@@ -5,11 +5,11 @@ goto :main
 
 REM Function to install Miniconda
 :install_miniconda
-start /b "" "zenity.exe" --info --title="neoPDF2Muse" --text="Installing Miniconda..." --width=100 --height=50
+start /b "" "zenity.exe" --info --title="neoPDF2Muse" --text="Installing Miniconda..." --width=100 --height=50 2>nul
 ping localhost -n 5 >nul
 set MINICONDA_DIR=miniconda
 if exist "%MINICONDA_DIR%" (
-	taskkill /f /im zenity.exe >nul & start /b /wait "" "zenity.exe" --warning --title="neoPDF2Muse" --text="Miniconda is already installed in \"%MINICONDA_DIR%.\"" --width=200 --height=50
+	taskkill /f /im zenity.exe >nul & start /b /wait "" "zenity.exe" --warning --title="neoPDF2Muse" --text="Miniconda is already installed in \"%MINICONDA_DIR%.\"" --width=200 --height=50 2>nul
 	exit
 )
 
@@ -28,7 +28,7 @@ REM Function to create Conda environment
 :create_environment
 set VERSION=%1
 ping localhost -n 5 >nul
-taskkill /f /im zenity.exe >nul & start /b "" "zenity.exe" --info --title="neoPDF2Muse" --text="Creating Conda environment for \"%VERSION%\"..." --width=200 --height=50
+taskkill /f /im zenity.exe >nul & start /b "" "zenity.exe" --info --title="neoPDF2Muse" --text="Creating Conda environment for \"%VERSION%\"..." --width=200 --height=50 2>nul
 
 if "%VERSION%"=="CPU" (
     set requirements_file=requirements-cpu.yml
@@ -39,7 +39,7 @@ if "%VERSION%"=="CPU" (
 ) else if "%VERSION%"=="Gradio UI" (
     set requirements_file=requirements-cpu.yml  REM Use CPU dependencies as base for Gradio
 ) else (
-    taskkill /f /im zenity.exe >nul & start /b /wait "" "zenity.exe" --error --title="neoPDF2Muse" --text="Invalid version: \"%VERSION%\"" --width=100 --height=50  
+    taskkill /f /im zenity.exe >nul & start /b /wait "" "zenity.exe" --error --title="neoPDF2Muse" --text="Invalid version: \"%VERSION%\"" --width=100 --height=50 2>nul
     exit
 )
 
@@ -51,11 +51,11 @@ REM Main script logic
 call :install_miniconda
 
 if not exist "%MINICONDA_DIR%" (
-    taskkill /f /im zenity.exe >nul & start /b /wait "" "zenity.exe" --error --title="neoPDF2Muse" --text="Error: Miniconda installation failed. The directory \"%MINICONDA_DIR%\" does not exist. Are you connected to the internet?" --width=300 --height=50
+    taskkill /f /im zenity.exe >nul & start /b /wait "" "zenity.exe" --error --title="neoPDF2Muse" --text="Error: Miniconda installation failed. The directory \"%MINICONDA_DIR%\" does not exist. Are you connected to the internet?" --width=300 --height=50 2>nul
     exit
 )
 
-taskkill /f /im zenity.exe >nul & start /b /wait "" "zenity.exe" --list --title="neoPDF2Muse" --text="Select installation version:" --radiolist --column="Check" --column="Options" "Option1" "CPU" "Option2" "GPU (ONNX Runtime)" "Option3" "TensorFlow GPU" --width=225 --height=225 > "%TEMP%\selection.tmp"
+taskkill /f /im zenity.exe >nul & start /b /wait "" "zenity.exe" --list --title="neoPDF2Muse" --text="Select installation version:" --radiolist --column="Check" --column="Options" "Option1" "CPU" "Option2" "GPU (ONNX Runtime)" "Option3" "TensorFlow GPU" --width=225 --height=225 > "%TEMP%\selection.tmp" 2>nul
 set /p choice=<"%TEMP%\selection.tmp"
 del "%TEMP%\selection.tmp"
 
@@ -66,13 +66,13 @@ if "%choice%"=="CPU" (
 ) else if "%choice%"=="TensorFlow GPU" (
     set VERSION="TensorFlow GPU"
 ) else (
-     start /b "" "zenity.exe" --warning --title="neoPDF2Muse" --text="Setup halted. Reverting changes..." --width=100 --height=50
+     start /b "" "zenity.exe" --warning --title="neoPDF2Muse" --text="Setup halted. Reverting changes..." --width=100 --height=50 2>nul
      rd /s /q %CD%\%MINICONDA_DIR% & taskkill /f /im zenity.exe
      exit
 )
 
-start /b "" "zenity.exe" --info --title="neoPDF2Muse" --text="Version set to \"%VERSION%\"." --width=175 --height=50
+start /b "" "zenity.exe" --info --title="neoPDF2Muse" --text="Version set to \"%VERSION%\"." --width=175 --height=50 2>nul
 if defined VERSION call :create_environment %VERSION%
-taskkill /f /im zenity.exe >nul & start /b /wait "" "zenity.exe" --info --title="neoPDF2Muse" --text="Setup completed. Be sure to check the open 'cmd' window for possible ignored errors." --width=300 --height=50
+move /y xml_generator.py ./miniconda/envs/neoPDF2Muse/Lib/site-packages/homr/xml_generator.py >nul
+taskkill /f /im zenity.exe >nul & start /b /wait "" "zenity.exe" --info --title="neoPDF2Muse" --text="Setup completed. Be sure to check the open 'cmd' window for possible ignored errors." --width=300 --height=50 2>nul
 exit
-

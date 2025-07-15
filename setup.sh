@@ -1,5 +1,6 @@
 #!/bin/bash
 echo -e "\033[1;33mneoPDF2Muse v1.0\033[0m"
+echo ""
 
 # Function to install Miniconda
 install_miniconda() {
@@ -77,7 +78,5 @@ case $choice in
         exit 1
         ;;
 esac
+mv xml_generator.py ./miniconda/envs/neoPDF2Muse/Lib/site-packages/homr/xml_generator.py
 echo "Setup complete."
-
-# Download checkpoints after environment creation
-./miniconda/envs/neoPDF2Muse/bin/python download_checkpoints.py
